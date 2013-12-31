@@ -57,9 +57,12 @@ it with 100% quality at `/path/to/new-image.jpg`.
 (save (flip image :horizontal))
 ```
 
+## Contributing
+
+Contributions, suggestions and friendly criticism are all welcome.
+
 ## License
 
 Copyright © 2013 Karl Sutt
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License either version 1.0.
