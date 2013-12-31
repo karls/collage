@@ -8,8 +8,8 @@
 ;; Clojure.
 ;;
 ;; The feature-set is somewhat similar to the previously mentioned libraries,
-;; adding functionality to paste layers onto an image and controlling the quality
-;; of the image when saving it to disk.
+;; adding functionality to paste layers (regular `BufferedImages`) onto an image
+;; and controlling the quality of the image when saving it to disk.
 ;;
 ;; ### This project aims to
 ;; * Be an easy to use, drop-in solution

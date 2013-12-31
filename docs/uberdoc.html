@@ -3039,8 +3039,8 @@ but I felt like implementing my own in order to gain more experience with
 Clojure.</p>
 
 <p>The feature-set is somewhat similar to the previously mentioned libraries,
-adding functionality to paste layers onto an image and controlling the quality
-of the image when saving it to disk.</p>
+adding functionality to paste layers (regular <code>BufferedImages</code>) onto an image
+and controlling the quality of the image when saving it to disk.</p>
 
 <h3>This project aims to</h3>
 
@@ -3262,7 +3262,8 @@ of the image when saving it to disk.</p>
            javax.imageio.IIOImage
            javax.imageio.ImageWriter
            javax.imageio.ImageWriteParam
-           fivetonine.collage.Frame))</pre></td></tr><tr><td class="docs"><p>Display an image in a <code>JFrame</code>.</p>
+           fivetonine.collage.Frame))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(declare parse-extension)</pre></td></tr><tr><td class="docs"><p>Display an image in a <code>JFrame</code>.</p>
 
 <p>  Convenience function for viewing an image quickly.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn show
