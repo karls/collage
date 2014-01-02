@@ -7,7 +7,7 @@ is somewhat similar to mikera's [imagez](https://github.com/mikera/imagez).
 
 ### Motivation
 Collage grew out of my own need when I was writing another Clojure application.
-I wanted to have some high-level image processing functionality available-
+I wanted to have some high-level image processing functionality available -
 functions into which I could just pass some `BufferedImages` and get back
 transformed `BufferedImages`. At the time, I resorted to doing Java interop,
 which is nice, but Clojure is nicer. I also wanted to get more experience with
@@ -31,9 +31,9 @@ Available on [Clojars](https://clojars.org/fivetonine/collage).
 (:require [fivetonine.collage.core :refer :all])
 
 (with-image "/path/to/image.jpg"
-  (resize :width 1000)
-  (rotate 90)
-  (save :quality 0.85))
+            (resize :width 1000)
+            (rotate 90)
+            (save :quality 0.85))
 ```
 
 Loads the image at `/path/to/image.jpg`, resizes it to have width of 1000px
