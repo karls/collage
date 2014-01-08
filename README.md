@@ -68,7 +68,7 @@ Collage does not provide support for WebP out of the box. Collage includes all
 the JVM `ImageIO` API plumbing (in resources/webp-imageio.jar), but
 the native binaries are not provided. Note that the `webp` format is reported as
 a supported format with `ImageIO.getReaderFormatNames()`. But when trying
-to load a `.webp` image, an Exception is thrown as the native binary for
+to load a `.webp` image, an exception is thrown as the native binary for
 actually loading the raw data in is missing.
 
 The main reason for not providing binaries is that I don't want to
@@ -82,6 +82,9 @@ in the same repo.
 
 If you run into problems compiling the binary or getting all the pieces working
 together, please open an issue and describe the situation.
+
+WebP support is currently tested only on Mac OSX, but it *should* work on other
+platforms as well.
 
 ## Contributing
 
