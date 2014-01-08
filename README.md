@@ -62,6 +62,27 @@ it with 100% quality at `/path/to/new-image.jpg`.
 (save (flip image :horizontal))
 ```
 
+## WebP support
+
+Collage does not provide support for WebP out of the box. Collage includes all
+the JVM `ImageIO` API plumbing (in resources/webp-imageio.jar), but
+the native binaries are not provided. Note that the `webp` format is reported as
+a supported format with `ImageIO.getReaderFormatNames()`. But when trying
+to load a `.webp` image, an Exception is thrown as the native binary for
+actually loading the raw data in is missing.
+
+The main reason for not providing binaries is that I don't want to
+build and maintain all the versions of all the binaries for all the platforms.
+
+Compiling the binary is fairly straightforward. Some instructions are available
+in the luciad's [webp-imageio](https://bitbucket.org/luciad/webp-imageio) repo.
+This repo includes code that is used in Collage to provide support for WebP.
+I also compiled the native binary that WebP depends on using the instructions
+in the same repo.
+
+If you run into problems compiling the binary or getting all the pieces working
+together, please open an issue and describe the situation.
+
 ## Contributing
 
 Contributions, suggestions and friendly criticism are all welcome.

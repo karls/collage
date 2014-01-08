@@ -1,9 +1,11 @@
 /target
 /classes
 /checkouts
+/native
 pom.xml
 pom.xml.asc
 *.jar
+!webp-imageio.jar
 *.class
 /.lein-*
 /.nrepl-port
