@@ -1,6 +1,7 @@
 (ns fivetonine.collage.util-test
   (:require [clojure.test :refer :all]
-            [clojure.java.io :refer [as-file]]
+            [clojure.java.io :refer [as-file resource]]
+            [clojure.string :as str]
             [fivetonine.collage.util :refer :all]
             [fivetonine.collage.helpers :refer :all])
   (:import java.io.File
@@ -25,7 +26,8 @@
     (are [image] (instance? BufferedImage image)
          (load-image path)
          (load-image (as-file path))
-         (load-image (ImageIO/read (as-file path))))))
+         (load-image (ImageIO/read (as-file path)))
+         (load-image (resource (str/replace path #"^fixtures/" ""))))))
 
 (deftest sanitize-path-test
   (is (instance? URI (sanitize-path "file:///path/to/some/image.png")))

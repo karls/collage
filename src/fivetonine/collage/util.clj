@@ -2,6 +2,7 @@
   (:require [clojure.java.io :refer [as-file file]])
   (:import java.io.File
            java.net.URI
+           java.net.URL
            java.awt.image.BufferedImage
            javax.imageio.ImageIO
            javax.imageio.IIOImage
@@ -66,6 +67,9 @@
 
   File
   (as-image [f] (ImageIO/read f))
+
+  URL
+  (as-image [r] (ImageIO/read r))
 
   BufferedImage
   (as-image [b] b))

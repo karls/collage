@@ -6,6 +6,8 @@
   :dependencies [[org.clojure/clojure "1.5.1"]]
   :plugins [[lein-marginalia "0.7.1"]]
 
+  :profiles {:test {:resource-paths ["fixtures"]}}
+
   ;; :global-vars { *warn-on-reflection* true }
 
   ;; WebP support
