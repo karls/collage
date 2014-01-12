@@ -43,23 +43,18 @@
         (is (.exists (File. saved-image)))))
     (cleanup-images))
 
-  (testing "with explicit progressive mode"
-    (testing "with supported mode"
+  (testing "with progressive mode"
+    (testing "turned on"
       (doseq [[path new-path] (seq test-image-paths)]
         (let [image (load-image path)
-              saved-image #(save image
-                                 new-path
-                                 :progressive-mode ImageWriteParam/MODE_DISABLED)]
+              saved-image #(save image new-path :progressive true)]
           (is (.exists (File. (saved-image))))))
       (cleanup-images))
-    (testing "with unsupported mode"
+    (testing "turned off"
       (doseq [[path new-path] (seq test-image-paths)]
         (let [image (load-image path)
-              saved-image #(save image
-                                 new-path
-                                 :progressive-mode ImageWriteParam/MODE_EXPLICIT)]
-          ;; MODE_EXPLICIT is not supported by .setProgressiveMode
-          (is (thrown? IllegalArgumentException (saved-image))))))
+              saved-image #(save image new-path :progressive false)]
+          (is (.exists (File. (saved-image)))))))
     (cleanup-images))
   (testing "with explicit quality coefficient"))
 
