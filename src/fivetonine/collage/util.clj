@@ -50,6 +50,12 @@
       (doto write-param
         (.setCompressionMode ImageWriteParam/MODE_EXPLICIT)
         (.setCompressionQuality (get opts :quality 0.8))))
+    (when (.canWriteProgressive write-param)
+      (doto write-param
+        ;; MODE_COPY_FROM_METADATA is the default according to Java docs
+        (.setProgressiveMode (get opts
+                                  :progressive-mode
+                                  ImageWriteParam/MODE_COPY_FROM_METADATA))))
     (doto writer
       (.setOutput outstream)
       (.write nil iioimage write-param)

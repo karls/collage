@@ -6,6 +6,7 @@
             [fivetonine.collage.helpers :refer :all])
   (:import java.io.File
            java.awt.image.BufferedImage
+           javax.imageio.ImageWriteParam
            java.awt.Color
            javax.imageio.ImageIO
            javax.swing.JFrame
@@ -42,6 +43,24 @@
         (is (.exists (File. saved-image)))))
     (cleanup-images))
 
+  (testing "with explicit progressive mode"
+    (testing "with supported mode"
+      (doseq [[path new-path] (seq test-image-paths)]
+        (let [image (load-image path)
+              saved-image #(save image
+                                 new-path
+                                 :progressive-mode ImageWriteParam/MODE_DISABLED)]
+          (is (.exists (File. (saved-image))))))
+      (cleanup-images))
+    (testing "with unsupported mode"
+      (doseq [[path new-path] (seq test-image-paths)]
+        (let [image (load-image path)
+              saved-image #(save image
+                                 new-path
+                                 :progressive-mode ImageWriteParam/MODE_EXPLICIT)]
+          ;; MODE_EXPLICIT is not supported by .setProgressiveMode
+          (is (thrown? IllegalArgumentException (saved-image))))))
+    (cleanup-images))
   (testing "with explicit quality coefficient"))
 
 (deftest copy-test
