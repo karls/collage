@@ -35,6 +35,20 @@
 (defn save
   "Store an image on disk.
 
+  Accepts optional keyword arguments.
+
+  `:quality` - decimal, between 0.0 and 1.0. Defaults to 0.8.
+
+  `:progressive` - boolean, `true` turns progressive saving on, `false`
+  turns it off. Defaults to the default value in the ImageIO API -
+  `ImageWriteParam/MODE_COPY_FROM_METADATA`. See
+  [Java docs](http://docs.oracle.com/javase/7/docs/api/javax/imageio/ImageWriteParam.html).
+
+  Examples:
+
+    (save image \"/path/to/new/image.jpg\" :quality 1.0)
+    (save image \"/path/to/new/image/jpg\" :progressive false)
+
   Returns the path to the saved image when saved successfully."
   [^BufferedImage image path & rest]
   (let [opts (apply hash-map rest)

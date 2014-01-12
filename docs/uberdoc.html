@@ -3257,6 +3257,7 @@ and controlling the quality of the image when saving it to disk.</p>
   (:require [clojure.java.io :refer [as-file file]])
   (:import java.io.File
            java.net.URI
+           java.net.URL
            java.awt.image.BufferedImage
            javax.imageio.ImageIO
            javax.imageio.IIOImage
@@ -3281,6 +3282,21 @@ and controlling the quality of the image when saving it to disk.</p>
     (.setData new-image (.getData image))
     new-image))</pre></td></tr><tr><td class="docs"><p>Store an image on disk.</p>
 
+<p>  Accepts optional keyword arguments.</p>
+
+<p>  <code>:quality</code> - decimal, between 0.0 and 1.0. Defaults to 0.8.</p>
+
+<p>  <code>:progressive</code> - boolean, <code>true</code> turns progressive saving on, <code>false</code>
+  turns it off. Defaults to the default value in the ImageIO API -
+  <code>ImageWriteParam/MODE_COPY_FROM_METADATA</code>. See
+  <a href="http://docs.oracle.com/javase/7/docs/api/javax/imageio/ImageWriteParam.html">Java docs</a>.</p>
+
+<p>  Examples:</p>
+
+<pre><code>(save image "/path/to/new/image.jpg" :quality 1.0)
+(save image "/path/to/new/image/jpg" :progressive false)
+</code></pre>
+
 <p>  Returns the path to the saved image when saved successfully.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn save
   [^BufferedImage image path &amp; rest]
@@ -3297,6 +3313,14 @@ and controlling the quality of the image when saving it to disk.</p>
       (doto write-param
         (.setCompressionMode ImageWriteParam/MODE_EXPLICIT)
         (.setCompressionQuality (get opts :quality 0.8))))
+    (when (.canWriteProgressive write-param)
+      (let [mode-map {true  ImageWriteParam/MODE_DEFAULT
+                      false ImageWriteParam/MODE_DISABLED}
+            mode-flag (get opts :progressive)]
+        (doto write-param
+          (.setProgressiveMode (get mode-map
+                                    mode-flag
+                                    ImageWriteParam/MODE_COPY_FROM_METADATA)))))
     (doto writer
       (.setOutput outstream)
       (.write nil iioimage write-param)
@@ -3311,6 +3335,9 @@ and controlling the quality of the image when saving it to disk.</p>
 
   File
   (as-image [f] (ImageIO/read f))
+
+  URL
+  (as-image [r] (ImageIO/read r))
 
   BufferedImage
   (as-image [b] b))</pre></td></tr><tr><td class="docs"><p>Loads an image from resource.</p>
