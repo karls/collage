@@ -55,11 +55,21 @@ image out of the original, at the point (100,50) in the original image, saves
 it with 100% quality at `/path/to/new-image.jpg`.
 
 #### Vanilla functions.
+
+Plain ol' functions
+
 ```clj
 (:require [fivetonine.collage.core :refer :all])
 
 (def image (load-image "/path/to/image.png"))
 (save (flip image :horizontal))
+```
+or using the [thread-first macro](http://clojuredocs.org/clojure_core/clojure.core/-%3E).
+
+```clj
+(:require [fivetonine.collage.core :refer :all])
+
+(-> (load-image "/path/to/image.png") (flip :horizontal) (save :progressive true))
 ```
 
 ## WebP support
