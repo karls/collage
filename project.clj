@@ -1,4 +1,4 @@
-(defproject fivetonine/collage "0.1.0"
+(defproject fivetonine/collage "0.2.0"
   :description "Clean, minimal image processing library for Clojure"
   :url "https://github.com/karls/collage"
   :license {:name "Eclipse Public License"
