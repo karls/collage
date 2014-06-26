@@ -28,12 +28,13 @@ Available on [Clojars](https://clojars.org/fivetonine/collage).
 
 #### Using the `with-image` macro.
 ```clj
+(:require [fivetonine.collage.util :as util])
 (:require [fivetonine.collage.core :refer :all])
 
 (with-image "/path/to/image.jpg"
             (resize :width 1000)
             (rotate 90)
-            (save :quality 0.85))
+            (util/save :quality 0.85))
 ```
 
 Loads the image at `/path/to/image.jpg`, resizes it to have width of 1000px
@@ -47,7 +48,7 @@ with 85% quality of the original, overwriting the original.
 (def image (util/load-image "/path/to/image.jpg"))
 (with-image image
 	        (crop 100 50 200 100)
-	        (save "/path/to/new-image.jpg" :quality 1.0))
+	        (util/save "/path/to/new-image.jpg" :quality 1.0))
 ```
 
 Loads an image at `/path/to/image.jpg`. With that image, crops a 200px by 100px
@@ -59,17 +60,19 @@ it with 100% quality at `/path/to/new-image.jpg`.
 Plain ol' functions
 
 ```clj
+(:require [fivetonine.collage.util :as util])
 (:require [fivetonine.collage.core :refer :all])
 
 (def image (load-image "/path/to/image.png"))
-(save (flip image :horizontal))
+(util/save (flip image :horizontal))
 ```
 or using the [thread-first macro](http://clojuredocs.org/clojure_core/clojure.core/-%3E).
 
 ```clj
+(:require [fivetonine.collage.util :as util])
 (:require [fivetonine.collage.core :refer :all])
 
-(-> (load-image "/path/to/image.png") (flip :horizontal) (save :progressive true))
+(-> (load-image "/path/to/image.png") (flip :horizontal) (util/save :progressive true))
 ```
 
 ## WebP support
