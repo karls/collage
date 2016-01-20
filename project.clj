@@ -1,10 +1,10 @@
-(defproject fivetonine/collage "0.2.0"
+(defproject fivetonine/collage "0.2.1"
   :description "Clean, minimal image processing library for Clojure"
   :url "https://github.com/karls/collage"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.5.1"]]
-  :plugins [[lein-marginalia "0.7.1"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]]
+  :plugins [[lein-marginalia "0.8.0"]]
 
   :profiles {:test {:resource-paths ["fixtures"]}}
 
