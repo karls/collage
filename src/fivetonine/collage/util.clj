@@ -113,7 +113,7 @@
   Returns the sanitized path, or throws if sanitization is not possible."
   [path]
   (when-let [scheme (-> path URI. .getScheme)]
-    (if (not (= "file" scheme))
+    (if-not (= "file" scheme)
       (throw (Exception. "Path must point to a local file."))
       (URI. path)))
   (URI. (str "file://" path)))

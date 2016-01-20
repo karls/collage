@@ -185,7 +185,7 @@
   Returns the resulting image."
   [image & layer-defs]
   (let [args (flatten (seq layer-defs))]
-    (when-not (= 0 (-> args count (rem 3)))
+    (when-not (zero? (-> args count (rem 3)))
       (throw (IllegalArgumentException.
               "Expected layer-defs format [image1 x1 y1 image2 x2 y2 ... ].")))
     (let [new-image (util/copy image)
