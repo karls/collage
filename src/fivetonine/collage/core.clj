@@ -23,6 +23,7 @@
   (:import java.awt.geom.AffineTransform)
   (:import java.awt.AlphaComposite)
   (:import java.awt.Color)
+  (:import java.awt.Polygon)
   (:import java.awt.RenderingHints))
 
 (declare resize*)
@@ -240,6 +241,35 @@
       (.drawImage image 0 0 nil)
       .dispose)
     circle))
+
+(defn- triangle-polygon [pos ^long w]
+  (case pos
+    :lower-left (Polygon. (int-array [0 w 0]) (int-array [w w 0]) 3)
+    :lower-right (Polygon. (int-array [w w 0]) (int-array [w 0 w]) 3)
+    :upper-right (Polygon. (int-array [w 0 w]) (int-array [0 0 w]) 3)
+    :upper-left (Polygon. (int-array [0 0 w]) (int-array [0 w 0]) 3)))
+
+(defn triangle
+  "Crop a triangle from an image, leaving a transparent background. Can optionally
+  be called with an option map that specifies where the triangle is positioned:
+
+  ```clj
+  (triangle image {:position :upper-left})
+  (triangle image {:position :lower-left})
+  (triangle image {:position :lower-right})
+  (triangle image {:position :upper-right})
+  ```"
+  [^BufferedImage image & [{:keys [position]}]]
+  (let [width (.getWidth image)
+        triangle (BufferedImage. width width BufferedImage/TYPE_INT_ARGB)]
+    (doto (.createGraphics triangle)
+      (.setComposite AlphaComposite/Clear)
+      (.fillRect 0 0 width width)
+      (.setComposite AlphaComposite/Src)
+      (.setClip (triangle-polygon (or position :upper-left) width))
+      (.drawImage image 0 0 width width nil)
+      .dispose)
+    triangle))
 
 (defmacro with-image
   "A helper for applying multiple operations to an image.
