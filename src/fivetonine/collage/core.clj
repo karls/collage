@@ -21,6 +21,8 @@
   (:require [fivetonine.collage.util :as util])
   (:import java.awt.image.BufferedImage)
   (:import java.awt.geom.AffineTransform)
+  (:import java.awt.AlphaComposite)
+  (:import java.awt.Color)
   (:import java.awt.RenderingHints))
 
 (declare resize*)
@@ -208,6 +210,36 @@
       (.drawImage (util/load-image layer) x y nil)
       (.dispose))
     base))
+
+(defn circle
+  "Crop a circle from an image, leaving a transparent background. This function
+  does not compose well with other functions that cut from the image, as its
+  implementation doesn't really cut - it paints parts of the image onto a
+  circle. If you need to compose circles with other shapes, create the circle
+  first.
+
+  Why must this function be so limited? Using a clip path yields a much too
+  jagged circle. Instead we paint a beautifully anti-aliased circle, and then
+  composit the image on top. This yields a pleasantly anti-aliased circle image
+  with the drawback that if you apply the transformation to a transparent image,
+  you will see the parts of the white circle the image doesn't cover."
+  [^BufferedImage image]
+  (let [width (.getWidth image)
+        circle (BufferedImage. width width BufferedImage/TYPE_INT_ARGB)]
+    (doto (.createGraphics circle)
+      (.setComposite AlphaComposite/Clear)
+      (.fillRect 0 0 width width)
+      ;; Fake soft-clipping by first drawing the desired clip shape in fully
+      ;; opaque white antialiasing enabled
+      (.setComposite AlphaComposite/Src)
+      (.setRenderingHint RenderingHints/KEY_ANTIALIASING RenderingHints/VALUE_ANTIALIAS_ON)
+      (.setColor (Color/WHITE))
+      (.fill (java.awt.geom.Ellipse2D$Float. 0 0 width width))
+      ;; Then composit the image on top
+      (.setComposite AlphaComposite/SrcAtop)
+      (.drawImage image 0 0 nil)
+      .dispose)
+    circle))
 
 (defmacro with-image
   "A helper for applying multiple operations to an image.
