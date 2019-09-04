@@ -22,6 +22,7 @@
   (:import java.awt.color.ColorSpace)
   (:import java.awt.image.BufferedImage)
   (:import java.awt.image.ColorConvertOp)
+  (:import java.awt.image.Raster)
   (:import java.awt.geom.AffineTransform)
   (:import java.awt.AlphaComposite)
   (:import java.awt.Color)
@@ -280,6 +281,60 @@
     (-> (ColorConvertOp. (.. image getColorModel getColorSpace) (ColorSpace/getInstance ColorSpace/CS_GRAY) nil)
         (.filter image output))
     output))
+
+(defn- align-bands
+  "Align the number of bands in the color with the specified bands - basically,
+  ensure that the color has an alpha channel if there are 4 bands, and that it
+  doesn't if there are 3. If an alpha channel must be added, it is set to fully
+  opaque - 255."
+  [bands color]
+  (let [c (count color)]
+    (cond
+      (< bands c) (take bands color)
+      (< c bands) (concat color [255])
+      :default color)))
+
+(defn duotone-filter
+  "Actually apply the duotone filter to the raster. This function uses a tight
+  loop over the pixels in the image, and is _very_ performance sensitive. If
+  attempting to refactor/simplify this function, benchmark your efforts before
+  and after, as it is very easy to trigger reflection and/or boxing, which
+  causes abysmal performance."
+  [^Raster raster from to]
+  (let [dest (.createCompatibleWritableRaster raster)
+        bands (.getNumBands dest)
+        dest-pixel (int-array bands)
+        w (.getWidth raster)
+        h (.getHeight raster)
+        from (int-array (align-bands bands from))
+        diff (int-array (map #(- %1 %2) (align-bands bands to) from))]
+    (loop [y 0]
+      (when (< y h)
+        (loop [x 0
+               pixel (int-array (repeat bands 0))]
+          (when (< x w)
+            (let [pixel (.getPixel raster x y pixel)
+                  factor (/ (aget pixel 0) 255.0)]
+              (dotimes [n bands]
+                (aset dest-pixel n (int (+ (aget from n) (* (aget diff n) factor)))))
+              (.setPixel dest x y dest-pixel)
+              (recur (inc x) pixel))))
+        (recur (inc y))))
+    dest))
+
+(defn duotone
+  "Create a duotone image. A duotone image is like a grayscale image, but instead
+  of mapping each pixel to the range black/white, it maps the pixels along the
+  gradient of an arbitrary from color to an arbitrary to color - e.g. from red
+  to blue. See samples at https://duotones.co
+
+  `from` and `to` are colors as vectors of R G B, and optionally Alpha values in
+  the range 0-255. The alpha channel can be omitted, in which case it will be
+  set to 255 if required by the image (e.g., if it is an ARGB image)."
+  [^BufferedImage image from to]
+  (let [color-model (.getColorModel image)
+        raster (duotone-filter (.getRaster (grayscale image)) from to)]
+    (BufferedImage. color-model raster (.isAlphaPremultiplied color-model) nil)))
 
 (defmacro with-image
   "A helper for applying multiple operations to an image.
