@@ -19,7 +19,9 @@
 ;;
 (ns fivetonine.collage.core
   (:require [fivetonine.collage.util :as util])
+  (:import java.awt.color.ColorSpace)
   (:import java.awt.image.BufferedImage)
+  (:import java.awt.image.ColorConvertOp)
   (:import java.awt.geom.AffineTransform)
   (:import java.awt.AlphaComposite)
   (:import java.awt.Color)
@@ -270,6 +272,14 @@
       (.drawImage image 0 0 width width nil)
       .dispose)
     triangle))
+
+(defn grayscale
+  "Convert an image to grayscale."
+  [^BufferedImage image]
+  (let [output (BufferedImage. (.getWidth image) (.getHeight image) (.getType image))]
+    (-> (ColorConvertOp. (.. image getColorModel getColorSpace) (ColorSpace/getInstance ColorSpace/CS_GRAY) nil)
+        (.filter image output))
+    output))
 
 (defmacro with-image
   "A helper for applying multiple operations to an image.
